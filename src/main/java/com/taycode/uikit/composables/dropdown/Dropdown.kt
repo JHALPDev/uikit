@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.taycode.uikit.theme.UiKitTextStyle
 import com.taycode.uikit.theme.UiKitTheme
 
 @ExperimentalMaterial3Api
@@ -30,24 +31,22 @@ fun <T> MinimalDropdownMenu(
     var selectedText by remember { mutableStateOf(text) }
 
     ExposedDropdownMenuBox(
-        modifier = modifier,
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
+        modifier = modifier, expanded = expanded, onExpandedChange = { expanded = !expanded }) {
         TextField(
+            textStyle = UiKitTextStyle.Body,
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor(),
             readOnly = true,
-            label = { Text(hint) },
+            label = {
+                Text(text = hint, style = UiKitTextStyle.Label)
+            },
             value = selectedText,
             onValueChange = {},
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
         )
         ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
+            expanded = expanded, onDismissRequest = { expanded = false }) {
             elements.forEach { item ->
                 DropdownMenuItem(
                     text = { Text(itemToString(item)) }, // Convierte T a String
@@ -72,10 +71,7 @@ fun AppDropDownOpenedPreview() {
             text = "",
             hint = "Select an option",
             elements = listOf("Option 1", "Option 2", "Option 3")
-        ).GetComposable(
-            itemToString = { it },
-            onItemSelected = {}
-        )
+        ).GetComposable(itemToString = { it }, onItemSelected = {})
     }
 }
 
@@ -88,9 +84,6 @@ fun AppDropDownClosedPreview() {
             text = "",
             hint = "Select an option",
             elements = listOf("Option 1", "Option 2", "Option 3")
-        ).GetComposable(
-            itemToString = { it },
-            onItemSelected = {}
-        )
+        ).GetComposable(itemToString = { it }, onItemSelected = {})
     }
 }

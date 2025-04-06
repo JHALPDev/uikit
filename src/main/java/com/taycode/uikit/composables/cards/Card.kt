@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.taycode.uikit.theme.UiKitTextStyle
 import com.taycode.uikit.theme.UiKitTheme
 
 @Composable
@@ -27,12 +26,11 @@ fun MinimalInfoCard(modifier: Modifier = Modifier, title: String, subtitle: Stri
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall,
+                text = title, style = UiKitTextStyle.TitleMediumBold
             )
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
+                style = UiKitTextStyle.Body,
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
@@ -55,15 +53,14 @@ fun HorizontalInfoCard(modifier: Modifier = Modifier, title: String, subtitle: S
                 textAlign = TextAlign.Start,
                 text = title,
                 modifier = modifier.weight(1f),
-                //  style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold, // Suggestion 5: Make title bold
+                style = UiKitTextStyle.TitleMediumBold
             )
             Spacer(modifier = Modifier.height(4.dp)) // Suggestion 6: Use Spacer for spacing
             Text(
                 textAlign = TextAlign.End,
                 modifier = modifier.weight(1f),
                 text = subtitle,
-                //   style = MaterialTheme.typography.bodyMedium,
+                style = UiKitTextStyle.Body,
             )
         }
     }
