@@ -3,6 +3,7 @@ package com.taycode.uikit.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 data object UiKitTextStyle {
 
@@ -30,4 +31,11 @@ data object UiKitTextStyle {
 
     val LabelBold
         @Composable get() = Label.copy(fontWeight = FontWeight.Bold)
+
+
+    val Button
+        @Composable get() = MaterialTheme.typography.labelLarge.copy(
+            fontWeight = FontWeight.SemiBold,
+            letterSpacing = 1.25.sp // Según guía Material
+        )
 }
