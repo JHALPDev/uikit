@@ -50,6 +50,9 @@ dependencies {
     api(libs.androidx.material3)
     api(libs.koin.androidx.compose)
 
+    api (libs.kotlinx.serialization.json)
+    api (libs.androidx.navigation.compose)
+
     api(libs.androidx.room.runtime)
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
     // See Add the KSP plugin to your project
