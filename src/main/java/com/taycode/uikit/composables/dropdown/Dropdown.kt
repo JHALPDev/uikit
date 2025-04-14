@@ -1,5 +1,6 @@
 package com.taycode.uikit.composables.dropdown
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -35,10 +36,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import com.taycode.uikit.R
 import com.taycode.uikit.composables.buttons.ButtonUiModel
 import com.taycode.uikit.theme.UiKitTextStyle
 import com.taycode.uikit.theme.UiKitTheme
@@ -51,7 +54,7 @@ import java.util.Locale
 fun <T> MinimalDropdownMenu(
     modifier: Modifier = Modifier,
     text: String,
-    hint: String,
+    @StringRes hint: Int,
     elements: List<T>,
     itemToString: (T) -> String, // Convierte T a String para la UI
     onItemSelected: (T) -> Unit // Devuelve el elemento seleccionado
@@ -68,7 +71,7 @@ fun <T> MinimalDropdownMenu(
                 .menuAnchor(),
             readOnly = true,
             label = {
-                Text(text = hint, style = UiKitTextStyle.Label)
+                Text(text = stringResource(hint), style = UiKitTextStyle.Label)
             },
             value = selectedText,
             onValueChange = {},
@@ -96,7 +99,9 @@ fun <T> MinimalDropdownMenu(
 fun DatePickerDocked(
     modifier: Modifier = Modifier,
     initialText: String = "",
-    hint: String,
+    @StringRes hint: Int,
+    isError: Boolean,
+    @StringRes errorMessage: Int?,
     onItemSelected: (String) -> Unit
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
@@ -108,37 +113,39 @@ fun DatePickerDocked(
 
     Box(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
-            value = selectedText, onValueChange = {}, label = {
-            Text(
-                text = hint, style = UiKitTextStyle.Label, color = colorScheme.onSurface
-            )
-        }, readOnly = true, interactionSource = interactionSource.also {
-            LaunchedEffect(it) {
-                it.interactions.collect { interaction ->
-                    if (interaction is PressInteraction.Release) {
-                        showDatePicker = true
+            isError = isError, value = selectedText, onValueChange = {}, label = {
+                Text(
+                    style = UiKitTextStyle.Label,
+                    text = if (isError) errorMessage?.let { stringResource(it) }.orEmpty()
+                    else stringResource(hint)
+                )
+            }, readOnly = true, interactionSource = interactionSource.also {
+                LaunchedEffect(it) {
+                    it.interactions.collect { interaction ->
+                        if (interaction is PressInteraction.Release) {
+                            showDatePicker = true
+                        }
                     }
                 }
-            }
-        }, trailingIcon = {
-            IconButton(onClick = { showDatePicker = true }, modifier = Modifier.semantics {
-                //  contentDescription = "Seleziona data"
-            }) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = null, // Icona decorativa
-                    tint = colorScheme.onSurface
-                )
-            }
-        }, textStyle = UiKitTextStyle.Label, colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorScheme.primary,
-            unfocusedBorderColor = colorScheme.outline,
-            focusedLabelColor = colorScheme.primary,
-            unfocusedLabelColor = colorScheme.onSurfaceVariant,
-            cursorColor = colorScheme.primary,
-            focusedTextColor = colorScheme.onSurface,
-            unfocusedTextColor = colorScheme.onSurface
-        ), modifier = Modifier
+            }, trailingIcon = {
+                IconButton(onClick = { showDatePicker = true }, modifier = Modifier.semantics {
+                    //  contentDescription = "Seleziona data"
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null, // Icona decorativa
+                        tint = colorScheme.onSurface
+                    )
+                }
+            }, textStyle = UiKitTextStyle.Label, colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = colorScheme.primary,
+                unfocusedBorderColor = colorScheme.outline,
+                focusedLabelColor = colorScheme.primary,
+                unfocusedLabelColor = colorScheme.onSurfaceVariant,
+                cursorColor = colorScheme.primary,
+                focusedTextColor = colorScheme.onSurface,
+                unfocusedTextColor = colorScheme.onSurface
+            ), modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
                 .semantics {
@@ -204,7 +211,7 @@ fun AppDropDownOpenedPreview() {
         DropDownUiModel.Minimal(
             id = "",
             text = "",
-            hint = "Select an option",
+            hint = R.string.select_an_option,
             elements = listOf("Option 1", "Option 2", "Option 3"),
             itemToString = { it },
             onItemSelected = {}).GetComposable()
@@ -218,7 +225,7 @@ fun AppDropDownClosedPreview() {
         DropDownUiModel.Minimal(
             id = "",
             text = "",
-            hint = "Select an option",
+            hint = R.string.select_an_option,
             elements = listOf("Option 1", "Option 2", "Option 3"),
             itemToString = { it },
             onItemSelected = {}).GetComposable()
@@ -230,6 +237,6 @@ fun AppDropDownClosedPreview() {
 fun DatePickerDockedPreview() {
     UiKitTheme {
         DropDownUiModel.DatePicker(
-           text = "", hint = "Select an option", onItemSelected = {}).GetComposable()
+            text = "", hint = R.string.select_an_option, onItemSelected = {}).GetComposable()
     }
 }

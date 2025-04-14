@@ -33,6 +33,12 @@ abstract class BaseViewModel<U : UIEvent, V> : ViewModel() {
         }
     }
 
+    fun emitEvent(event: UIEvent) {
+        viewModelScope.launch {
+            _event.emit(event)
+        }
+    }
+
     fun emitLoading() = _state.update { it.copy(screenStates = ScreenStates.Loading) }
 
     fun emitError() = _state.update { it.copy(screenStates = ScreenStates.Error) }
