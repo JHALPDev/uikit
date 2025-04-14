@@ -1,23 +1,32 @@
 package com.taycode.uikit.composables.textfields
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 sealed class TextFieldUiModel() {
-    data class Outlined(val text: String, val hint: String, val singleLine: Boolean = true, val enabled: Boolean = true) :
-        TextFieldUiModel()
+
+    abstract val text: String
+
+    data class Outlined(
+        override val text: String,
+        @StringRes val hint: Int,
+        val singleLine: Boolean = true,
+        val enabled: Boolean = true,
+        val onTextChanged: (String) -> Unit
+    ) : TextFieldUiModel()
 
     @Composable
-    fun GetComposable(onTextChange: (String) -> Unit) {
+    fun GetComposable(modifier: Modifier = Modifier) {
         when (this) {
             is Outlined -> AppOutlineTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 text = text,
                 hint = hint,
                 singleLine = singleLine,
                 enabled = enabled,
-                onTextChange = onTextChange,
+                onTextChanged = onTextChanged,
             )
         }
     }
