@@ -93,6 +93,50 @@ fun <T> MinimalDropdownMenu(
         }
     }
 }
+@ExperimentalMaterial3Api
+@Composable
+fun <T> MinimalOutlinedDropdownMenu(
+    modifier: Modifier = Modifier,
+    text: String,
+    @StringRes hint: Int,
+    elements: List<T>,
+    itemToString: (T) -> String, // Convierte T a String para la UI
+    onItemSelected: (T) -> Unit // Devuelve el elemento seleccionado
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf(text) }
+
+    ExposedDropdownMenuBox(
+        modifier = modifier, expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+        OutlinedTextField(
+            textStyle = UiKitTextStyle.Body,
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+            readOnly = true,
+            label = {
+                Text(text = stringResource(hint), style = UiKitTextStyle.Label)
+            },
+            value = selectedText,
+            onValueChange = {},
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+        )
+        ExposedDropdownMenu(
+            expanded = expanded, onDismissRequest = { expanded = false }) {
+            elements.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(itemToString(item)) }, // Convierte T a String
+                    onClick = {
+                        selectedText = itemToString(item)
+                        onItemSelected(item) // Devuelve el elemento seleccionado
+                        expanded = false
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -209,7 +253,6 @@ fun convertMillisToDate(millis: Long): String {
 fun AppDropDownOpenedPreview() {
     UiKitTheme {
         DropDownUiModel.Minimal(
-            id = "",
             text = "",
             hint = R.string.select_an_option,
             elements = listOf("Option 1", "Option 2", "Option 3"),
@@ -223,7 +266,6 @@ fun AppDropDownOpenedPreview() {
 fun AppDropDownClosedPreview() {
     UiKitTheme {
         DropDownUiModel.Minimal(
-            id = "",
             text = "",
             hint = R.string.select_an_option,
             elements = listOf("Option 1", "Option 2", "Option 3"),

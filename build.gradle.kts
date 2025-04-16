@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)//Anche a livello superiore
 }
 
 android {
@@ -53,10 +52,9 @@ dependencies {
     api (libs.kotlinx.serialization.json)
     api (libs.androidx.navigation.compose)
 
-    api(libs.androidx.room.runtime)
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
     // See Add the KSP plugin to your project
-    ksp(libs.androidx.room.compiler)
+   // ksp(libs.androidx.room.compiler)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

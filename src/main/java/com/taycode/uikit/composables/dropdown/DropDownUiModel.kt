@@ -3,7 +3,6 @@ package com.taycode.uikit.composables.dropdown
 import androidx.annotation.StringRes
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.room.util.copy
 import com.taycode.uikit.composables.dropdown.ErrorState.None
 
 sealed class ErrorState {
@@ -23,7 +22,6 @@ sealed class DropDownUiModel<T> {
     abstract fun clearError(): DropDownUiModel<T>
 
     data class Minimal<T>(
-        val id: String,
         override val text: String,
         override val hint: Int,
         val elements: List<T>,
@@ -32,6 +30,19 @@ sealed class DropDownUiModel<T> {
         override val errorState: ErrorState = None
     ) : DropDownUiModel<T>() {
         override fun clearError(): Minimal<T> {
+            return this.copy(errorState = None)
+        }
+    }
+
+    data class MinimalOutLined<T>(
+        override val text: String,
+        override val hint: Int,
+        val elements: List<T>,
+        val itemToString: (T) -> String,
+        override val onItemSelected: (T) -> Unit,
+        override val errorState: ErrorState = None
+    ) : DropDownUiModel<T>() {
+        override fun clearError(): MinimalOutLined<T> {
             return this.copy(errorState = None)
         }
     }
@@ -54,6 +65,14 @@ sealed class DropDownUiModel<T> {
     fun GetComposable() {
         when (this) {
             is Minimal -> MinimalDropdownMenu(
+                text = text,
+                hint = hint,
+                elements = elements,
+                itemToString = itemToString,
+                onItemSelected = onItemSelected
+            )
+
+            is MinimalOutLined -> MinimalOutlinedDropdownMenu(
                 text = text,
                 hint = hint,
                 elements = elements,
