@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<U : UIEvent, V> : ViewModel() {
+abstract class BaseViewModel<V> : ViewModel() {
     private val _event = MutableSharedFlow<UIEvent>(replay = 0)
     val event = _event.asSharedFlow().conflate()
 

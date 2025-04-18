@@ -17,16 +17,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-abstract class BaseScreen<T : BaseViewModel<out UIEvent, A>, A> {
-
+abstract class BaseScreen<VM : BaseViewModel<UiModel>, UiModel> {
     @Composable
     abstract fun Content(
         padding: PaddingValues,
-        uiModel: A,
+        uiModel: UiModel,
         onEvent: (UIEvent) -> Unit,
     )
 
@@ -35,31 +32,30 @@ abstract class BaseScreen<T : BaseViewModel<out UIEvent, A>, A> {
     }
 
     @Composable
-    open fun BottomBar(uiModel: A, onEvent: (UIEvent) -> Unit) {
+    open fun BottomBar(uiModel: UiModel, onEvent: (UIEvent) -> Unit) {
     }
 
     @Composable
     fun RenderWithState(
-        navController: NavController = rememberNavController(),
-        viewModel: BaseViewModel<out UIEvent, A> = koinViewModel<BaseViewModel<out UIEvent, A>>(),
+        navController: NavController,
+        viewModel: VM,
     ) {
         val uiEvent =
             viewModel.event.collectAsStateWithLifecycle(initialValue = CommonUIEvent.NoAction)
         val state = viewModel.state.collectAsStateWithLifecycle()
-        Render(navController, uiEvent.value, state.value, viewModel::handleEvent)
+
+        LaunchedEffect(uiEvent.value) {
+            handleEvent(uiEvent.value, navController)
+        }
+        Render(uiEvent = viewModel::handleEvent, uiState = state.value)
     }
+
 
     @Composable
     fun Render(
-        navController: NavController = rememberNavController(),
-        uiEvent: UIEvent,
-        uiState: UIState<A>,
-        handleEvent: (UIEvent) -> Unit,
+        uiState: UIState<UiModel>,
+        uiEvent: (UIEvent) -> Unit,
     ) {
-
-        LaunchedEffect(uiEvent) {
-            handleEvent(uiEvent)
-        }
 
         if (uiState.screenStates is ScreenStates.Loading) {
             Dialog(
@@ -83,12 +79,13 @@ abstract class BaseScreen<T : BaseViewModel<out UIEvent, A>, A> {
 
         Scaffold(
             topBar = { TopBar() }, bottomBar = {
-            BottomBar(uiModel = uiState.data, ::handleEvent)
-        }, modifier = Modifier
+                BottomBar(uiModel = uiState.data, uiEvent)
+            }, modifier = Modifier
         ) {
-            Content(padding = it, uiModel = uiState.data, ::handleEvent)
+            Content(padding = it, uiModel = uiState.data, uiEvent)
         }
     }
 
-    abstract fun handleEvent(event: UIEvent)
+    open fun handleEvent(event: UIEvent, navController: NavController) {
+    }
 }

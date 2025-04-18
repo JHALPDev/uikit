@@ -18,32 +18,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun <T : BaseViewModel<out UIEvent, A>, A> collectViewModelState(
-    viewModel: T,
-    onEvent: ((UIEvent) -> Unit)? = null
-): Pair<A, (UIEvent) -> Unit> {
-    val uiEvent by viewModel.event.collectAsStateWithLifecycle(initialValue = CommonUIEvent.NoAction)
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(key1 = uiEvent) {
-        onEvent?.invoke(uiEvent)
-    }
-
-    return state.data to viewModel::handleEvent
-}
-
-
-@Composable
-inline fun <reified T : BaseViewModel<out UIEvent, A>, A> UiKitScaffold(
+inline fun <reified T : BaseViewModel<A>, A> UiKitScaffold(
     modifier: Modifier = Modifier,
-    viewModel: T,
     noinline topBar: @Composable () -> Unit = {},
     noinline content: @Composable (PaddingValues, A, (UIEvent) -> Unit) -> Unit,
     noinline bottomBar: @Composable (A, (UIEvent) -> Unit) -> Unit = { _, _ -> },
     noinline onEvent: ((UIEvent) -> Unit)? = null,
 ) {
+    val viewModel: T = koinViewModel()
     val uiEvent by viewModel.event.collectAsStateWithLifecycle(initialValue = CommonUIEvent.NoAction)
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -78,7 +63,9 @@ inline fun <reified T : BaseViewModel<out UIEvent, A>, A> UiKitScaffold(
     Scaffold(topBar = topBar, content = {
         content.invoke(it, state.data, viewModel::handleEvent)
     }, bottomBar = {
-        Box(modifier = Modifier.navigationBarsPadding().wrapContentSize()){
+        Box(modifier = Modifier
+            .navigationBarsPadding()
+            .wrapContentSize()) {
             bottomBar.invoke(state.data, viewModel::handleEvent)
         }
     }, modifier = modifier)
