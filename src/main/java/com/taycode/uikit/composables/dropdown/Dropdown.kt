@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +25,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -36,18 +40,35 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.taycode.uikit.R
 import com.taycode.uikit.composables.buttons.ButtonUiModel
+import com.taycode.uikit.core.CombinedPreviews
 import com.taycode.uikit.theme.UiKitTextStyle
 import com.taycode.uikit.theme.UiKitTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
+private fun setTrailingIcon(
+    modifier: Modifier = Modifier,
+    trailingIcon: ImageVector?,
+    isExpanded: Boolean,
+): @Composable (() -> Unit)? = {
+
+    val icon = trailingIcon
+        ?: if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
+    Icon(
+        modifier = modifier,
+        imageVector = icon,
+        contentDescription = trailingIcon?.name, // Icona decorativa
+        tint = colorScheme.onSurface
+    )
+}
 
 @ExperimentalMaterial3Api
 @Composable
@@ -55,9 +76,10 @@ fun <T> MinimalDropdownMenu(
     modifier: Modifier = Modifier,
     text: String,
     @StringRes hint: Int,
+    trailingIcon: ImageVector?,
     elements: List<T>,
     itemToString: (T) -> String, // Convierte T a String para la UI
-    onItemSelected: (T) -> Unit // Devuelve el elemento seleccionado
+    onItemSelected: (T) -> Unit, // Devuelve el elemento seleccionado
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(text) }
@@ -70,12 +92,32 @@ fun <T> MinimalDropdownMenu(
                 .fillMaxWidth()
                 .menuAnchor(),
             readOnly = true,
+            trailingIcon = setTrailingIcon(
+                trailingIcon = trailingIcon, isExpanded = expanded
+            ),
             label = {
                 Text(text = stringResource(hint), style = UiKitTextStyle.Label)
             },
             value = selectedText,
             onValueChange = {},
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedTextColor = colorScheme.onSurface,
+                unfocusedTextColor = colorScheme.onSurface,
+                cursorColor = colorScheme.primary,
+
+                focusedContainerColor = colorScheme.surface,
+                unfocusedContainerColor = colorScheme.surface,
+                disabledContainerColor = colorScheme.surfaceVariant,
+
+                focusedIndicatorColor = colorScheme.primary,
+                unfocusedIndicatorColor = colorScheme.outline,
+
+                focusedTrailingIconColor = colorScheme.primary,
+                unfocusedTrailingIconColor = colorScheme.onSurfaceVariant,
+
+                focusedLabelColor = colorScheme.primary,
+                unfocusedLabelColor = colorScheme.onSurfaceVariant,
+            ),
         )
         ExposedDropdownMenu(
             expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -93,6 +135,7 @@ fun <T> MinimalDropdownMenu(
         }
     }
 }
+
 @ExperimentalMaterial3Api
 @Composable
 fun <T> MinimalOutlinedDropdownMenu(
@@ -100,11 +143,13 @@ fun <T> MinimalOutlinedDropdownMenu(
     text: String,
     @StringRes hint: Int,
     elements: List<T>,
+    trailingIcon: ImageVector?,
     itemToString: (T) -> String, // Convierte T a String para la UI
-    onItemSelected: (T) -> Unit // Devuelve el elemento seleccionado
+    onItemSelected: (T) -> Unit, // Devuelve el elemento seleccionado
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(text) }
+    val colorScheme = MaterialTheme.colorScheme
 
     ExposedDropdownMenuBox(
         modifier = modifier, expanded = expanded, onExpandedChange = { expanded = !expanded }) {
@@ -114,12 +159,30 @@ fun <T> MinimalOutlinedDropdownMenu(
                 .fillMaxWidth()
                 .menuAnchor(),
             readOnly = true,
+            trailingIcon = setTrailingIcon(trailingIcon = trailingIcon, isExpanded = expanded),
             label = {
                 Text(text = stringResource(hint), style = UiKitTextStyle.Label)
             },
             value = selectedText,
             onValueChange = {},
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedTextColor = colorScheme.onSurface,
+                unfocusedTextColor = colorScheme.onSurface,
+                cursorColor = colorScheme.primary,
+
+                focusedContainerColor = colorScheme.surface,
+                unfocusedContainerColor = colorScheme.surface,
+                disabledContainerColor = colorScheme.surfaceVariant,
+
+                focusedIndicatorColor = colorScheme.primary,
+                unfocusedIndicatorColor = colorScheme.outline,
+
+                focusedTrailingIconColor = colorScheme.primary,
+                unfocusedTrailingIconColor = colorScheme.onSurfaceVariant,
+
+                focusedLabelColor = colorScheme.primary,
+                unfocusedLabelColor = colorScheme.onSurfaceVariant,
+            ),
         )
         ExposedDropdownMenu(
             expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -145,8 +208,9 @@ fun DatePickerDocked(
     initialText: String = "",
     @StringRes hint: Int,
     isError: Boolean,
+    trailingIcon: ImageVector?,
     @StringRes errorMessage: Int?,
-    onItemSelected: (String) -> Unit
+    onItemSelected: (String) -> Unit,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(initialText) }
@@ -167,28 +231,58 @@ fun DatePickerDocked(
                 LaunchedEffect(it) {
                     it.interactions.collect { interaction ->
                         if (interaction is PressInteraction.Release) {
-                            showDatePicker = true
+                            showDatePicker = !showDatePicker
                         }
                     }
                 }
-            }, trailingIcon = {
-                IconButton(onClick = { showDatePicker = true }, modifier = Modifier.semantics {
-                    //  contentDescription = "Seleziona data"
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = null, // Icona decorativa
-                        tint = colorScheme.onSurface
-                    )
-                }
-            }, textStyle = UiKitTextStyle.Label, colors = OutlinedTextFieldDefaults.colors(
+            }, trailingIcon = setTrailingIcon(
+                isExpanded = showDatePicker, trailingIcon = trailingIcon
+            ), textStyle = UiKitTextStyle.Label, colors = OutlinedTextFieldDefaults.colors(
+                // Texto
+                focusedTextColor = colorScheme.onSurface,
+                unfocusedTextColor = colorScheme.onSurface,
+                disabledTextColor = colorScheme.onSurfaceVariant,
+                errorTextColor = colorScheme.error,
+
+                // Fondo (container)
+                focusedContainerColor = colorScheme.surface,
+                unfocusedContainerColor = colorScheme.surface,
+                disabledContainerColor = colorScheme.surfaceVariant,
+                errorContainerColor = colorScheme.surface,
+
+                // Cursor
+                cursorColor = colorScheme.primary,
+                errorCursorColor = colorScheme.error,
+
+                // Borde
                 focusedBorderColor = colorScheme.primary,
                 unfocusedBorderColor = colorScheme.outline,
+                disabledBorderColor = colorScheme.outline,
+                errorBorderColor = colorScheme.error,
+
+                // Icono final
+                focusedTrailingIconColor = colorScheme.primary,
+                unfocusedTrailingIconColor = colorScheme.onSurfaceVariant,
+                disabledTrailingIconColor = colorScheme.onSurfaceVariant,
+                errorTrailingIconColor = colorScheme.error,
+
+                // Label
                 focusedLabelColor = colorScheme.primary,
                 unfocusedLabelColor = colorScheme.onSurfaceVariant,
-                cursorColor = colorScheme.primary,
-                focusedTextColor = colorScheme.onSurface,
-                unfocusedTextColor = colorScheme.onSurface
+                disabledLabelColor = colorScheme.onSurfaceVariant,
+                errorLabelColor = colorScheme.error,
+
+                // Placeholder
+                focusedPlaceholderColor = colorScheme.onSurfaceVariant,
+                unfocusedPlaceholderColor = colorScheme.onSurfaceVariant,
+                disabledPlaceholderColor = colorScheme.onSurfaceVariant,
+                errorPlaceholderColor = colorScheme.error,
+
+                // Texto de ayuda (si llegas a usarlo)
+                focusedSupportingTextColor = colorScheme.onSurfaceVariant,
+                unfocusedSupportingTextColor = colorScheme.onSurfaceVariant,
+                disabledSupportingTextColor = colorScheme.onSurfaceVariant,
+                errorSupportingTextColor = colorScheme.error
             ), modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
@@ -219,12 +313,12 @@ fun DatePickerDocked(
                                             // contentDescription = "Selezione data"
                                         }) {
                                     ButtonUiModel.AppOutlinedButton(
-                                        text = "Cancelar", onClick = {
+                                        text = stringResource(R.string.cancelar), onClick = {
                                             showDatePicker = false
-                                        }).GetComposable()
+                                        }).GetComposable(modifier.weight(1f))
 
                                     ButtonUiModel.AppOutlinedButton(
-                                        text = "OK", onClick = {
+                                        text = stringResource(R.string.ok), onClick = {
                                             val millis = datePickerState.selectedDateMillis
                                             if (millis != null) {
                                                 val formattedDate = convertMillisToDate(millis)
@@ -232,7 +326,7 @@ fun DatePickerDocked(
                                                 onItemSelected(formattedDate)
                                             }
                                             showDatePicker = false
-                                        }).GetComposable()
+                                        }).GetComposable(modifier.weight(1f))
                                 }
                             }, state = datePickerState, showModeToggle = false
                         )
@@ -248,7 +342,7 @@ fun convertMillisToDate(millis: Long): String {
     return formatter.format(Date(millis))
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@CombinedPreviews
 @Composable
 fun AppDropDownOpenedPreview() {
     UiKitTheme {
@@ -261,7 +355,7 @@ fun AppDropDownOpenedPreview() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@CombinedPreviews
 @Composable
 fun AppDropDownClosedPreview() {
     UiKitTheme {
@@ -274,7 +368,7 @@ fun AppDropDownClosedPreview() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@CombinedPreviews
 @Composable
 fun DatePickerDockedPreview() {
     UiKitTheme {

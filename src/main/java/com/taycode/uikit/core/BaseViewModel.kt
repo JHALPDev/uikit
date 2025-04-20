@@ -22,7 +22,6 @@ abstract class BaseViewModel<V> : ViewModel() {
 
     open fun handleEvent(event: UIEvent) {
         viewModelScope.launch {
-            Log.d(BaseViewModel::class.java.simpleName, "handleEvent: $event")
             _event.emit(event)
         }
     }
@@ -34,9 +33,7 @@ abstract class BaseViewModel<V> : ViewModel() {
     }
 
     fun emitEvent(event: UIEvent) {
-        viewModelScope.launch {
-            _event.emit(event)
-        }
+        handleEvent(event)
     }
 
     fun emitLoading() = _state.update { it.copy(screenStates = ScreenStates.Loading) }

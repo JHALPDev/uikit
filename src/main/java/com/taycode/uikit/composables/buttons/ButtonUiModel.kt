@@ -2,6 +2,7 @@ package com.taycode.uikit.composables.buttons
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -16,31 +17,46 @@ import com.taycode.uikit.theme.UiKitTextStyle
 import com.taycode.uikit.theme.UiKitTheme
 
 sealed class ButtonUiModel {
-    data class AppSimpleButton(val text: String, val enabled: Boolean = true, val onClick: () -> Unit) :
-        ButtonUiModel()
+    data class AppSimpleButton(
+        val text: String,
+        val enabled: Boolean = true,
+        val onClick: () -> Unit,
+    ) : ButtonUiModel()
 
-    data class AppOutlinedButton(val text: String, val enabled: Boolean = true, val onClick: () -> Unit) :
-        ButtonUiModel()
+    data class AppOutlinedButton(
+        val text: String,
+        val enabled: Boolean = true,
+        val onClick: () -> Unit,
+    ) : ButtonUiModel()
 
-    data class AppTextButton(val text: String, val enabled: Boolean = true, val onClick: () -> Unit) :
-        ButtonUiModel()
+    data class AppTextButton(
+        val text: String,
+        val enabled: Boolean = true,
+        val onClick: () -> Unit,
+    ) : ButtonUiModel()
 
     @Composable
     fun GetComposable(modifier: Modifier = Modifier) {
         when (this) {
             is AppSimpleButton -> AppSimpleButton(
-                text = text, enabled = enabled, onClick = onClick, modifier = modifier
-            )
-
-            is AppOutlinedButton -> AppOutlinedButton(
-                text = text, enabled = enabled, onClick = onClick, modifier = modifier
-            )
-
-            is ButtonUiModel.AppTextButton -> AppTextButton(
                 text = text,
                 enabled = enabled,
                 onClick = onClick,
-                modifier = modifier
+                modifier = modifier.fillMaxWidth()
+            )
+
+            is AppOutlinedButton -> AppOutlinedButton(
+                text = text,
+                enabled = enabled,
+                onClick = onClick,
+                modifier = modifier.fillMaxWidth()
+            )
+
+            is AppTextButton -> AppTextButton(
+                text = text,
+                enabled = enabled,
+                onClick = onClick,
+                modifier = modifier.fillMaxWidth()
             )
         }
     }
@@ -51,7 +67,7 @@ fun AppTextButton(
     text: String,
     enabled: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TextButton(
         onClick = onClick,
@@ -63,8 +79,7 @@ fun AppTextButton(
         )
     ) {
         Text(
-            text = text,
-            style = UiKitTextStyle.Button
+            text = text, style = UiKitTextStyle.Button
         )
     }
 }
@@ -116,7 +131,8 @@ fun SimpleButtonPreview() {
     UiKitTheme {
         Column {
             ButtonUiModel.AppSimpleButton(text = "Click me", onClick = {}).GetComposable()
-            ButtonUiModel.AppSimpleButton(text = "Click me", enabled = false, onClick = {}).GetComposable()
+            ButtonUiModel.AppSimpleButton(text = "Click me", enabled = false, onClick = {})
+                .GetComposable()
         }
     }
 }
@@ -127,7 +143,8 @@ fun OutlinedButtonPreview() {
     UiKitTheme {
         Column {
             ButtonUiModel.AppOutlinedButton(text = "Click me", onClick = {}).GetComposable()
-            ButtonUiModel.AppOutlinedButton(text = "Click me", enabled = false, onClick = {}).GetComposable()
+            ButtonUiModel.AppOutlinedButton(text = "Click me", enabled = false, onClick = {})
+                .GetComposable()
         }
     }
 }
@@ -138,7 +155,8 @@ fun TextButtonPreview() {
     UiKitTheme {
         Column {
             ButtonUiModel.AppTextButton(text = "Click me", onClick = {}).GetComposable()
-            ButtonUiModel.AppTextButton(text = "Click me", enabled = false, onClick = {}).GetComposable()
+            ButtonUiModel.AppTextButton(text = "Click me", enabled = false, onClick = {})
+                .GetComposable()
         }
     }
 }
