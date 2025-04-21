@@ -3,4 +3,5 @@
     <string name="select_an_option">Select an option</string>
     <string name="cancelar">Cancelar</string>
     <string name="ok">OK</string>
+    <string name="error_title">Error</string>
 </resources>

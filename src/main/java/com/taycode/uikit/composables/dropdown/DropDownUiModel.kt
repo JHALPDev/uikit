@@ -49,6 +49,8 @@ sealed class DropDownUiModel<T> {
         override val errorState: ErrorState = None,
         override val trailingIcon: ImageVector? = null,
         val itemToString: (T) -> String,
+        val itemToIcon: ((T) -> ImageVector?)? = null,
+        val itemToColor: ((T) -> androidx.compose.ui.graphics.Color?)? = null,
         override val onItemSelected: (T) -> Unit,
     ) : DropDownUiModel<T>() {
         override fun clearError(): MinimalOutLined<T> {
@@ -87,9 +89,11 @@ sealed class DropDownUiModel<T> {
                 text = text,
                 hint = hint,
                 elements = elements,
-                itemToString = itemToString,
                 trailingIcon = trailingIcon,
-                onItemSelected = onItemSelected
+                itemToString = itemToString,
+                itemToIcon = itemToIcon,
+                onItemSelected = onItemSelected,
+                itemToColor = itemToColor
             )
 
             is DatePicker -> DatePickerDocked(
