@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -119,16 +121,18 @@ fun <T> MinimalDropdownMenu(
         )
         ExposedDropdownMenu(
             expanded = expanded, onDismissRequest = { expanded = false }) {
-            elements.forEach { item ->
-                DropdownMenuItem(
-                    text = { Text(itemToString(item)) }, // Convierte T a String
-                    onClick = {
-                        selectedText = itemToString(item)
-                        onItemSelected(item) // Devuelve el elemento seleccionado
-                        expanded = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                )
+            LazyColumn(modifier = Modifier.height(200.dp)) {
+                items(elements, key = { it.hashCode() }) { item ->
+                    DropdownMenuItem(
+                        text = { Text(itemToString(item)) }, // Convierte T a String
+                        onClick = {
+                            selectedText = itemToString(item)
+                            onItemSelected(item) // Devuelve el elemento seleccionado
+                            expanded = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    )
+                }
             }
         }
     }
@@ -186,25 +190,27 @@ fun <T> MinimalOutlinedDropdownMenu(
         )
         ExposedDropdownMenu(
             expanded = expanded, onDismissRequest = { expanded = false }) {
-            elements.forEach { item ->
-                DropdownMenuItem(
-                    text = { Text(itemToString(item)) }, // Convierte T a String
-                    onClick = {
-                        selectedText = itemToString(item)
-                        onItemSelected(item) // Devuelve el elemento seleccionado
-                        expanded = false
-                    },
-                    trailingIcon = {
-                        itemToIcon?.invoke(item)?.let {
-                            Icon(
-                                imageVector = it,
-                                contentDescription = it.name,
-                                tint = itemToColor?.invoke(item) ?: colorScheme.onSurface
-                            )
-                        }
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                )
+            LazyColumn(modifier = Modifier.height(200.dp)) {
+                items(elements, key = { it.hashCode() }) { item ->
+                    DropdownMenuItem(
+                        text = { Text(itemToString(item)) }, // Convierte T a String
+                        onClick = {
+                            selectedText = itemToString(item)
+                            onItemSelected(item) // Devuelve el elemento seleccionado
+                            expanded = false
+                        },
+                        trailingIcon = {
+                            itemToIcon?.invoke(item)?.let {
+                                Icon(
+                                    imageVector = it,
+                                    contentDescription = it.name,
+                                    tint = itemToColor?.invoke(item) ?: colorScheme.onSurface
+                                )
+                            }
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    )
+                }
             }
         }
     }
@@ -231,68 +237,68 @@ fun DatePickerDocked(
     Box(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
             isError = isError, value = selectedText, onValueChange = {}, label = {
-                Text(
-                    style = UiKitTextStyle.Label,
-                    text = if (isError) errorMessage?.let { stringResource(it) }.orEmpty()
-                    else stringResource(hint)
-                )
-            }, readOnly = true, interactionSource = interactionSource.also {
-                LaunchedEffect(it) {
-                    it.interactions.collect { interaction ->
-                        if (interaction is PressInteraction.Release) {
-                            showDatePicker = !showDatePicker
-                        }
+            Text(
+                style = UiKitTextStyle.Label,
+                text = if (isError) errorMessage?.let { stringResource(it) }.orEmpty()
+                else stringResource(hint)
+            )
+        }, readOnly = true, interactionSource = interactionSource.also {
+            LaunchedEffect(it) {
+                it.interactions.collect { interaction ->
+                    if (interaction is PressInteraction.Release) {
+                        showDatePicker = !showDatePicker
                     }
                 }
-            }, trailingIcon = setTrailingIcon(
-                isExpanded = showDatePicker, trailingIcon = trailingIcon
-            ), textStyle = UiKitTextStyle.Label, colors = OutlinedTextFieldDefaults.colors(
-                // Texto
-                focusedTextColor = colorScheme.onSurface,
-                unfocusedTextColor = colorScheme.onSurface,
-                disabledTextColor = colorScheme.onSurfaceVariant,
-                errorTextColor = colorScheme.error,
+            }
+        }, trailingIcon = setTrailingIcon(
+            isExpanded = showDatePicker, trailingIcon = trailingIcon
+        ), textStyle = UiKitTextStyle.Label, colors = OutlinedTextFieldDefaults.colors(
+            // Texto
+            focusedTextColor = colorScheme.onSurface,
+            unfocusedTextColor = colorScheme.onSurface,
+            disabledTextColor = colorScheme.onSurfaceVariant,
+            errorTextColor = colorScheme.error,
 
-                // Fondo (container)
-                focusedContainerColor = colorScheme.surface,
-                unfocusedContainerColor = colorScheme.surface,
-                disabledContainerColor = colorScheme.surfaceVariant,
-                errorContainerColor = colorScheme.surface,
+            // Fondo (container)
+            focusedContainerColor = colorScheme.surface,
+            unfocusedContainerColor = colorScheme.surface,
+            disabledContainerColor = colorScheme.surfaceVariant,
+            errorContainerColor = colorScheme.surface,
 
-                // Cursor
-                cursorColor = colorScheme.primary,
-                errorCursorColor = colorScheme.error,
+            // Cursor
+            cursorColor = colorScheme.primary,
+            errorCursorColor = colorScheme.error,
 
-                // Borde
-                focusedBorderColor = colorScheme.primary,
-                unfocusedBorderColor = colorScheme.outline,
-                disabledBorderColor = colorScheme.outline,
-                errorBorderColor = colorScheme.error,
+            // Borde
+            focusedBorderColor = colorScheme.primary,
+            unfocusedBorderColor = colorScheme.outline,
+            disabledBorderColor = colorScheme.outline,
+            errorBorderColor = colorScheme.error,
 
-                // Icono final
-                focusedTrailingIconColor = colorScheme.primary,
-                unfocusedTrailingIconColor = colorScheme.onSurfaceVariant,
-                disabledTrailingIconColor = colorScheme.onSurfaceVariant,
-                errorTrailingIconColor = colorScheme.error,
+            // Icono final
+            focusedTrailingIconColor = colorScheme.primary,
+            unfocusedTrailingIconColor = colorScheme.onSurfaceVariant,
+            disabledTrailingIconColor = colorScheme.onSurfaceVariant,
+            errorTrailingIconColor = colorScheme.error,
 
-                // Label
-                focusedLabelColor = colorScheme.primary,
-                unfocusedLabelColor = colorScheme.onSurfaceVariant,
-                disabledLabelColor = colorScheme.onSurfaceVariant,
-                errorLabelColor = colorScheme.error,
+            // Label
+            focusedLabelColor = colorScheme.primary,
+            unfocusedLabelColor = colorScheme.onSurfaceVariant,
+            disabledLabelColor = colorScheme.onSurfaceVariant,
+            errorLabelColor = colorScheme.error,
 
-                // Placeholder
-                focusedPlaceholderColor = colorScheme.onSurfaceVariant,
-                unfocusedPlaceholderColor = colorScheme.onSurfaceVariant,
-                disabledPlaceholderColor = colorScheme.onSurfaceVariant,
-                errorPlaceholderColor = colorScheme.error,
+            // Placeholder
+            focusedPlaceholderColor = colorScheme.onSurfaceVariant,
+            unfocusedPlaceholderColor = colorScheme.onSurfaceVariant,
+            disabledPlaceholderColor = colorScheme.onSurfaceVariant,
+            errorPlaceholderColor = colorScheme.error,
 
-                // Texto de ayuda (si llegas a usarlo)
-                focusedSupportingTextColor = colorScheme.onSurfaceVariant,
-                unfocusedSupportingTextColor = colorScheme.onSurfaceVariant,
-                disabledSupportingTextColor = colorScheme.onSurfaceVariant,
-                errorSupportingTextColor = colorScheme.error
-            ), modifier = Modifier
+            // Texto de ayuda (si llegas a usarlo)
+            focusedSupportingTextColor = colorScheme.onSurfaceVariant,
+            unfocusedSupportingTextColor = colorScheme.onSurfaceVariant,
+            disabledSupportingTextColor = colorScheme.onSurfaceVariant,
+            errorSupportingTextColor = colorScheme.error
+        ), modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
                 .semantics {
