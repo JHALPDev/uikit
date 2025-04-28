@@ -3,9 +3,7 @@ minSdkVersion = "24"
 compileSdkVersion = "35"
 agp = "8.9.1"
 converterGson = "2.9.0"
-koinAndroidxCompose = "4.0.2"
 kotlin = "2.0.21"
-ksp = "2.0.21-1.0.27"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -46,5 +44,3 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-

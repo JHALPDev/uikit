@@ -48,9 +48,7 @@ dependencies {
     api(libs.androidx.ui.tooling.preview)
     api(libs.androidx.material3)
     api(libs.androidx.material.icons.extended)
-    api(libs.koin.androidx.compose)
 
-    api (libs.kotlinx.serialization.json)
     api (libs.androidx.navigation.compose)
 
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)

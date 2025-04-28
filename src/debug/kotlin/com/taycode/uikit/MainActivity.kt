@@ -1,6 +1,5 @@
 package com.taycode.uikit
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.taycode.uikit.composables.cards.MinimalInfoCard
 import com.taycode.uikit.theme.UiKitTheme
-import org.koin.compose.KoinApplication
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
